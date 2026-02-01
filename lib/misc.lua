@@ -330,9 +330,13 @@ function Cryptid.deep_copy(obj, seen)
 		return seen[obj]
 	end
 	local s = seen or {}
-	local res = setmetatable({}, getmetatable(obj))
+	local mt = getmetatable(obj)
+	if type(mt) ~= "table" then
+		mt = nil
+	end
+	local res = setmetatable({}, mt)
 	s[obj] = res
-	for k, v in pairs(obj) do
+	for k, v in next, obj do
 		res[Cryptid.deep_copy(k, s)] = Cryptid.deep_copy(v, s)
 	end
 	return res
